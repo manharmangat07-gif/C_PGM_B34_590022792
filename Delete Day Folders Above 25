@@ -1,0 +1,30 @@
+name: Delete Day Folders Above 25
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Delete day folders above 25
+        run: |
+          for d in day{26..99}; do
+            if [ -d "$d" ]; then
+              echo "Deleting folder: $d"
+              rm -rf "$d"
+            fi
+          done
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Delete day folders above 25"
+          git push origin main
